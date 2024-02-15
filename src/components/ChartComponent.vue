@@ -1,21 +1,24 @@
-<template lang="html">
+<template>
   <v-container fluid class="pa-1">
     <template v-if="!incompleteConfig">
-      <canvas ref="chartCanvas" :height="height" :width="width" />
+      <svg ref="chartSvg" :height="height" :width="width" :viewBox="`0 0 ${height} ${width}`">
+        <g v-for="(slice, index) in chartPaths" :key="index">
+          <path :d="slice.d" :fill="slice.fill"></path>
+        </g>
+      </svg>
     </template>
   </v-container>
 </template>
 
 <script>
-import chartUtils from '../assets/chart-utils.js'
 import useAppInfo from '@/composables/useAppInfo'
-import { ref, computed, onMounted, watch, nextTick, shallowRef } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { prepareSvgPieChartData } from '../assets/chart-utils.js'
 
 export default {
   setup() {
     const appInfo = useAppInfo()
-    const chartCanvas = shallowRef(null)
-    const chart = shallowRef(null)
+    const chartPaths = ref([])
     const chartTop = ref(0)
     const height = ref(null)
     const width = ref(null)
@@ -24,61 +27,56 @@ export default {
     const incompleteConfig = computed(() => appInfo.incompleteConfig === null)
     const config = computed(() => appInfo.config)
 
-    watch(data, async () => {
-      if (chartCanvas.value) {
-        chartTop.value = chartCanvas.value.getBoundingClientRect().top
-      }
-      try {
-        await refresh()
-      } catch (err) {
-        await nextTick()
-        renderChart()
-      }
-    }, { immediate: true })
-
-    onMounted(async () => {
-      await nextTick()
-      if (chartCanvas.value) {
-        chartTop.value = chartCanvas.value.getBoundingClientRect().top
-      }
-      window.addEventListener('resize', refresh, true)
-      refresh()
-    })
-
     const refresh = async () => {
       height.value = window.innerHeight - chartTop.value
       width.value = window.innerWidth
-      if (chart.value) {
-        chart.value.destroy()
-        chart.value = null
+      if (chartPaths.value) {
+        chartPaths.value = []
       }
-      await nextTick()
       renderChart()
     }
 
     const renderChart = () => {
       if (!data.value || incompleteConfig.value === null) return
+      const cx = width.value / 2
+      const cy = height.value / 2
+
       try {
-        if (!chart.value) {
-          // create the chart
-        } else {
-          // update the values of the chart
-        }
+        chartPaths.value = prepareSvgPieChartData(config.value, data.value, cx, cy)
       } catch (err) {
         appInfo.setError(err)
       }
     }
 
+    watch([data, config], async () => {
+      if (data.value && config.value) {
+        chartPaths.value = prepareSvgPieChartData(config.value, data.value)
+      }
+      try {
+        await refresh()
+      } catch (err) {
+        renderChart()
+      }
+    }, { immediate: true })
+
+    onMounted(async () => {
+      if (chartPaths.value.length > 0) {
+        chartTop.value = chartPaths.value.getBoundingClientRect().top
+      }
+      window.addEventListener('resize', refresh, true)
+      refresh()
+    })
+
     return {
-      chartCanvas,
-      height,
-      width,
+      chartPaths,
       incompleteConfig,
-      config
+      height,
+      width
     }
   }
 }
 </script>
 
 <style lang="css">
+/* Add styles if needed */
 </style>

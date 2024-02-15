@@ -1,4 +1,5 @@
 import getColors from '@data-fair/lib/color-scheme/colors.js'
+import { generateHuesFromColor } from 'palex'
 
 function formatValue(value, maxLength) {
   if (typeof value === 'number') return value.toLocaleString()
@@ -85,4 +86,51 @@ function prepareData(config, data) {
   }
 }
 
+function calculatePieSlicePath(cx, cy, radius, startAngle, endAngle) {
+  const start = polarToCartesian(cx, cy, radius, endAngle)
+  const end = polarToCartesian(cx, cy, radius, startAngle)
+  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1'
+  const d = [
+    'M', start.x, start.y,
+    'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+    'L', cx, cy,
+    'Z'
+  ].join(' ')
+  return d
+}
+
+function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0
+  return {
+    x: centerX + (radius * Math.cos(angleInRadians)),
+    y: centerY + (radius * Math.sin(angleInRadians))
+  }
+}
+
+function prepareSvgPieChartData(config, data, cx, cy) {
+  console.log('prepareSvgPieChartData', config, data)
+  const radius = 100 // Radius of the pie chart
+  let startAngle = 0
+  const chartData = []
+
+  const totalMetric = data.aggs.reduce((acc, agg) => acc + agg.metric, 0)
+  const backgroundColors = generateHuesFromColor('#6272A4', data.aggs.length)
+
+  data.aggs.forEach((agg, index) => {
+    const angle = (agg.metric / totalMetric) * 360
+    const endAngle = startAngle + angle
+    const path = calculatePieSlicePath(cx, cy, radius, startAngle, endAngle)
+    chartData.push({
+      d: path,
+      fill: backgroundColors[index]
+    })
+    startAngle = endAngle
+  })
+  console.log('chartData', chartData)
+
+  return chartData
+}
+
 export default { prepareChart, prepareData, chartTitle }
+
+export { prepareSvgPieChartData }
