@@ -1,0 +1,57 @@
+{
+  "name": "@data-fair/app-pie-chart",
+  "version": "0.1.0",
+  "description": "A simple charts application for data-fair",
+  "author": "EDM115 <dev@edm115.eu.org> (https://edm115.dev)",
+  "homepage": "https://github.com/data-fair/app-pie-chart",
+  "license": "MIT",
+  "scripts": {
+    "analyze": "cross-env ANALYZE=true npm run build-dev",
+    "build": "cross-env-shell PUBLIC_URL=https://cdn.jsdelivr.net/npm/@data-fair/app-pie-chart@${npm_package_version}/dist \"npm run build-dev\"",
+    "build-dev": "rimraf dist && npm run build-types && node prepare-schema.js && cross-env-shell PUBLIC_URL=https://staging-koumoul.com/apps/pie-chart/master/ \"vite build\"",
+    "build-types": "df-build-types && ncp src/config/.type/resolved-schema.json public/config-schema.json",
+    "dev": "cross-env APP_URL=http://localhost:3000/app/ df-dev-server",
+    "dev-src": "vite",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "precommit": "npm run lint",
+    "prepublishOnly": "npm run build",
+    "preview": "vite preview"
+  },
+  "files": [
+    "/dist",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "@data-fair/lib": "^0.23.0",
+    "@mdi/font": "^7.4.47",
+    "chroma-js": "^2.4.2",
+    "ofetch": "^1.3.3",
+    "url-polyfill": "^1.1.12",
+    "vue": "^3.4.19",
+    "vuetify": "^3.5.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.9",
+    "@babel/eslint-parser": "^7.23.10",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
+    "@data-fair/dev-server": "^1.12.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "babel-preset-vue": "^2.0.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.56.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-vue": "^9.21.1",
+    "json-schema-to-typescript": "^11.0.5",
+    "ncp": "^2.0.0",
+    "rimraf": "^5.0.5",
+    "rollup-plugin-visualizer": "^5.12.0",
+    "unplugin-fonts": "^1.1.1",
+    "vite": "^5.1.2",
+    "vite-plugin-commonjs": "^0.10.1",
+    "vite-plugin-vuetify": "^2.0.1"
+  }
+}
