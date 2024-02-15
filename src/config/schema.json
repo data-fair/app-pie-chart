@@ -17,14 +17,6 @@
       }
     },
     {
-      "title": "Type de visualisation",
-      "properties": {
-        "chartType": {
-          "$ref": "#/definitions/chartType"
-        }
-      }
-    },
-    {
     "title": "Préparation des données",
     "properties": {
       "dataType": {
@@ -96,7 +88,6 @@
       },
       "allOf": [
         {
-          "title": "Groupes",
           "properties": {
             "groupBy": {
               "$ref": "#/definitions/groupBy"
