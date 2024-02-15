@@ -96,8 +96,7 @@
       },
       "allOf": [
         {
-          "title": "1er niveau de groupes",
-          "description": "Dans le cas d'un diagramme en ligne, ce 1er niveau de groupes va correspondre aux valeurs présentées en abscisse.",
+          "title": "Groupes",
           "properties": {
             "groupBy": {
               "$ref": "#/definitions/groupBy"
@@ -111,23 +110,8 @@
           }
         },
         {
-          "title": "2ème niveau de groupes",
-          "description": "Ce 2ème niveau est optionnel. Dans le cas d'un diagramme en ligne il s'agira du critère de séparation des lignes en séries multiples.",
-          "properties": {
-            "secondGroupBy": {
-              "$ref": "#/definitions/groupBy"
-            },
-            "secondSort": {
-              "$ref": "#/definitions/sortMetric"
-            },
-            "dynamicSort2": {
-              "$ref": "#/definitions/dynamicSort"
-            }
-          }
-        },
-        {
           "title": "Calcul à effectuer",
-          "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser. Dans le cas d'un diagramme en ligne il s'agira des valeurs présentées en ordonnée.",
+          "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
           "required": ["metricType"],
           "properties": {
             "metricType": {

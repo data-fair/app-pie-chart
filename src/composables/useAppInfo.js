@@ -26,9 +26,6 @@ export default function useAppInfo() {
     if (!(config.datasets && config.datasets[0] && config.datasets[0].href)) {
       throw new Error('Pas de jeu de données configuré.')
     }
-    if (config.dataType.type === 'linesBased' && (!config.dataType.valuesFields || !config.dataType.valuesFields.length)) {
-      throw new Error('Pas de colonnes de valeurs sélectionnées.')
-    }
     if (config.dataType.type === 'metricBased' && !config.dataType.valueField) {
       throw new Error('Pour ce type de préparation de données vous devez configurer la colonne sur laquelle effectuer un calcul.')
     }
@@ -88,11 +85,7 @@ export default function useAppInfo() {
     }
 
     if (config && config.dataType) {
-      if (config.dataType.type === 'linesBased') {
-        await fetchLinesData()
-      } else {
-        await fetchAggData()
-      }
+      await fetchAggData()
     }
   }, 10)
 
@@ -104,14 +97,11 @@ export default function useAppInfo() {
       agg_size: config.dataType.groupBy.size,
       sort: config.dataType.sort,
       interval: config.dataType.groupBy.type === 'value' ? 'value' : config.dataType.groupBy.interval,
+      metric: config.dataType.metricType,
+      metric_field: config.dataType.valueField.key,
       qs: filters2qs((config.staticFilters).concat(config.dynamicFilters)),
       ...conceptFilters.conceptFilters.value,
       finalizedAt: config.datasets[0].finalizedAt // for better caching
-    }
-
-    if (config.dataType.type === 'metricBased') {
-      params.metric = config.dataType.metricType
-      params.metric_field = config.dataType.valueField.key
     }
 
     if (config.dataType.secondGroupBy && config.dataType.secondGroupBy.field && config.dataType.secondGroupBy.field.key) {
@@ -124,24 +114,6 @@ export default function useAppInfo() {
     }
 
     const response = await ofetch(`${config.datasets[0].href}/values_agg`, { params }).catch(err => {
-      setError(err)
-    })
-    setAny({ data: response })
-  }
-
-  async function fetchLinesData() {
-    const config = application.configuration
-
-    const params = {
-      select: config.dataType.valuesFields.map(f => f.key).concat([config.dataType.labelsField.key]).join(','),
-      size: config.dataType.size,
-      sort: (config.dataType.sortOrder === 'desc' ? '-' : '') + config.dataType.sortBy.key,
-      qs: filters2qs((config.staticFilters).concat(config.dynamicFilters)),
-      ...conceptFilters.conceptFilters.value,
-      finalizedAt: config.datasets[0].finalizedAt // for better caching
-    }
-
-    const response = await ofetch(`${config.datasets[0].href}/lines`, { params }).catch(err => {
       setError(err)
     })
     setAny({ data: response })
