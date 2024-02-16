@@ -17,9 +17,9 @@
       <div v-else>
         <svg ref="chartSvg" :height="height" :width="width" :viewBox="`0 0 ${width} ${height}`">
           <g v-for="(slice, index) in chartPaths" :key="index"
-              @mouseenter="showTooltip($event, index)"
-              @mousemove="moveTooltip($event)"
-              @mouseleave="hideTooltip">
+            @mouseenter="showTooltip($event, index)"
+            @mousemove="moveTooltip($event)"
+            @mouseleave="hideTooltip">
             <path :d="slice.d" :fill="slice.fill"></path>
           </g>
         </svg>
@@ -34,15 +34,15 @@
 
 <script>
 import useAppInfo from '@/composables/useAppInfo'
-import { ref, computed, onMounted, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { prepareSvgPieChartData, chartTitle as generateChartTitle, metricTypes } from '../assets/chart-utils.js'
 
 export default {
   setup() {
     const appInfo = useAppInfo()
     const chartPaths = ref([])
-    const height = ref(null)
-    const width = ref(null)
+    const height = ref(window.innerHeight - 10)
+    const width = ref(window.innerWidth)
 
     const data = computed(() => appInfo.data)
     const incompleteConfig = computed(() => appInfo.incompleteConfig === null)
@@ -86,14 +86,16 @@ export default {
       if (chartPaths.value) {
         chartPaths.value = []
       }
+      await nextTick()
       renderChart()
     }
 
-    const renderChart = () => {
+    const renderChart = async () => {
       if (!data.value || incompleteConfig.value === null) return
       const cx = width.value / 2
       const cy = height.value / 2
 
+      await nextTick()
       try {
         chartPaths.value = prepareSvgPieChartData(config.value, data.value, cx, cy)
       } catch (err) {
@@ -106,6 +108,7 @@ export default {
         chartPaths.value = prepareSvgPieChartData(config.value, data.value)
       }
       try {
+        await nextTick()
         await refresh()
       } catch (err) {
         renderChart()
@@ -114,6 +117,7 @@ export default {
 
     onMounted(async () => {
       window.addEventListener('resize', refresh, true)
+      await nextTick()
       refresh()
     })
 
