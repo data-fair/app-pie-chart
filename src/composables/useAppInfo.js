@@ -26,7 +26,7 @@ export default function useAppInfo() {
     if (!(config.datasets && config.datasets[0] && config.datasets[0].href)) {
       throw new Error('Pas de jeu de données configuré.')
     }
-    if (config.dataType.type === 'metricBased' && !config.dataType.valueField) {
+    if (config.dataType.groupBy.field && !config.dataType.groupBy.field.length > 0) {
       throw new Error('Pour ce type de préparation de données vous devez configurer la colonne sur laquelle effectuer un calcul.')
     }
     return config
@@ -85,33 +85,39 @@ export default function useAppInfo() {
     }
 
     if (config && config.dataType) {
-      await fetchAggData()
+      const metricData = []
+
+      for (const fieldValue of config.dataType.groupBy.field) {
+        const params = {
+          metric: config.dataType.metricType,
+          field: fieldValue,
+          ...conceptFilters.conceptFilters.value,
+          finalizedAt: config.datasets[0].finalizedAt // for better caching
+        }
+
+        if (config.staticFilters && config.staticFilters.length > 0 && config.dynamicFilters && config.dynamicFilters.length > 0) {
+          params.qs = filters2qs(config.staticFilters.concat(config.dynamicFilters))
+        }
+
+        const response = await ofetch(`${config.datasets[0].href}/metric_agg`, { params }).catch(err => {
+          setError(err)
+        })
+        const schemaResponse = await ofetch(`${config.datasets[0].href}/schema?calculated=false&type=integer,number`).catch(err => {
+          console.error(err)
+          return []
+        })
+        const fieldName = schemaResponse
+          .filter(item => fieldValue === item.key)
+          .map(item => item.label)
+        response.ogField = fieldName
+
+        metricData.push(response)
+      }
+      metricData.ogMetric = config.dataType.metricType
+
+      setAny({ data: metricData })
     }
   }, 10)
-
-  async function fetchAggData() {
-    const config = application.configuration
-
-    const params = {
-      field: config.dataType.groupBy.field.key,
-      agg_size: config.dataType.groupBy.size,
-      sort: config.dataType.sort,
-      interval: config.dataType.groupBy.type === 'value' ? 'value' : config.dataType.groupBy.interval,
-      metric: config.dataType.metricType,
-      metric_field: config.dataType.valueField.key,
-      ...conceptFilters.conceptFilters.value,
-      finalizedAt: config.datasets[0].finalizedAt // for better caching
-    }
-
-    if (config.staticFilters && config.staticFilters.length > 0 && config.dynamicFilters && config.dynamicFilters.length > 0) {
-      params.qs = filters2qs((config.staticFilters).concat(config.dynamicFilters))
-    }
-
-    const response = await ofetch(`${config.datasets[0].href}/values_agg`, { params }).catch(err => {
-      setError(err)
-    })
-    setAny({ data: response })
-  }
 
   watch(conceptFilters.conceptFilters, fetchData)
 

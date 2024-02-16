@@ -8,11 +8,17 @@ const metricTypes = [
   { value: 'avg', text: 'Moyenne' }
 ]
 
-function chartTitle(config) {
+function chartTitle(config, data) {
   if (config.title) return config.title
   const metricType = metricTypes.find(m => m.value === config.dataType?.metricType)
-  let label = metricType?.text + ' de ' + config.dataType?.valueField?.label
-  if (config.dataType?.groupBy && config.dataType.groupBy.field) label += ' par ' + config.dataType.groupBy.field.label
+  const labels = data.map(value => {
+    return value.ogField[0]
+  })
+
+  let label = metricType?.text || ''
+  if (labels.length > 0) {
+    label += ' de ' + labels.join(', ')
+  }
   return label
 }
 
@@ -37,18 +43,18 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
   }
 }
 
-function prepareSvgPieChartData(config, data, cx, cy) {
-  if (data.aggs.length > 500) {
+function prepareSvgPieChartData(data, cx, cy) {
+  if (data.length > 500) {
     throw new Error('Nombre d\'éléments à afficher trop important. Abandon.')
   }
   const radius = Math.min(cx, cy)
   let startAngle = 0
   const chartData = []
 
-  const totalMetric = data.aggs.reduce((acc, agg) => acc + agg.metric, 0)
-  const backgroundColors = generateHuesFromColor('#6272A4', data.aggs.length)
+  const totalMetric = data.reduce((acc, agg) => acc + agg.metric, 0)
+  const backgroundColors = generateHuesFromColor('#6272A4', data.length)
 
-  data.aggs.forEach((agg, index) => {
+  data.forEach((agg, index) => {
     const angle = (agg.metric / totalMetric) * 360
     const endAngle = startAngle + angle
     const path = calculatePieSlicePath(cx, cy, radius, startAngle, endAngle)

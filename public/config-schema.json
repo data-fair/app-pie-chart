@@ -136,7 +136,6 @@
           "title": "grouper les lignes et calculer des valeurs dans ces groupes",
           "type": "object",
           "required": [
-            "valueField",
             "metricType",
             "groupBy",
             "sort"
@@ -160,16 +159,20 @@
                   },
                   "oneOf": [
                     {
-                      "title": "valeurs exactes d'une colonne",
+                      "title": "valeurs exactes de colonnes",
                       "properties": {
                         "type": {
                           "const": "value",
                           "title": "Grouper par"
                         },
                         "field": {
-                          "type": "object",
-                          "title": "Grouper en fonction de cette colonne",
-                          "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
+                          "title": "Grouper en fonction de ces colonnes",
+                          "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
                           "x-itemTitle": "label",
                           "x-itemKey": "key"
                         }
@@ -188,7 +191,7 @@
                       }
                     },
                     {
-                      "title": "intervalles d'une colonne de type date",
+                      "title": "intervalles de colonnes de type date",
                       "required": [
                         "field",
                         "interval"
@@ -198,8 +201,11 @@
                           "const": "date"
                         },
                         "field": {
-                          "type": "object",
-                          "title": "Grouper en fonction de cette colonne",
+                          "title": "Grouper en fonction de ces colonnes",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
                           "x-fromUrl": "{datasets.0.href}/schema?calculated=false&format=date,date-time",
                           "x-itemTitle": "label",
                           "x-itemKey": "key"
@@ -234,7 +240,7 @@
                       }
                     },
                     {
-                      "title": "intervalles d'une colonne numérique",
+                      "title": "intervalles de colonnes numérique",
                       "required": [
                         "field",
                         "interval"
@@ -244,8 +250,12 @@
                           "const": "number"
                         },
                         "field": {
-                          "type": "object",
-                          "title": "Grouper en fonction de cette colonne",
+                          "title": "Grouper en fonction de ces colonnes",
+                          "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
                           "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
                           "x-itemTitle": "label",
                           "x-itemKey": "key"
@@ -285,19 +295,11 @@
                       "title": "la clé du groupe (descendant)"
                     }
                   ]
-                }
-              }
-            },
-            {
-              "title": "Calcul à effectuer",
-              "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
-              "required": [
-                "metricType"
-              ],
-              "properties": {
+                },
                 "metricType": {
                   "type": "string",
                   "title": "Type de calcul",
+                  "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
                   "default": "sum",
                   "oneOf": [
                     {
@@ -317,14 +319,6 @@
                       "title": "somme"
                     }
                   ]
-                },
-                "valueField": {
-                  "type": "object",
-                  "title": "Colonne de valeurs",
-                  "description": "La colonne contenant la valeur numérique sur laquelle effectuer un calcul.",
-                  "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
-                  "x-itemTitle": "label",
-                  "x-itemKey": "key"
                 }
               }
             }
@@ -347,7 +341,7 @@
         "colorscheme": {
           "type": "object",
           "title": "Palette de couleur",
-          "description": "**Qualitative** : pour représenter des données catégorielles ou nominales.\n\n**Divergente** : accorde la même importance aux différentes valeurs des données.\n\n**Séquentielle** : pour des données ordonnées qui varient d'une valeur faible à une valeur forte (gradient)\n\n**Thème global** : utilise les couleurs principales de l'interface, peut être étendu en une palette pour plus de variété\n\n**Palette personnalisée** : choisissez vos propres couleurs",
+          "description": "**Qualitative** : pour représenter des données catégorielles ou nominales.\n\n**Thème global** : utilise les couleurs principales de l'interface, peut être étendu en une palette pour plus de variété\n\n**Palette personnalisée** : choisissez vos propres couleurs",
           "x-exports": [
             "types",
             "schema"
@@ -406,198 +400,6 @@
                     }
                   ],
                   "default": "Accent"
-                }
-              }
-            },
-            {
-              "title": "Palette divergente",
-              "required": [
-                "type",
-                "name"
-              ],
-              "properties": {
-                "type": {
-                  "const": "diverging"
-                },
-                "name": {
-                  "type": "string",
-                  "oneOf": [
-                    {
-                      "const": "BrBG",
-                      "title": "Marron-Bleu-Vert"
-                    },
-                    {
-                      "const": "PRGn",
-                      "title": "Violet-Vert"
-                    },
-                    {
-                      "const": "PiYG",
-                      "title": "Rose-Jaune-Vert"
-                    },
-                    {
-                      "const": "PuOr",
-                      "title": "Orange-Violet"
-                    },
-                    {
-                      "const": "RdBu",
-                      "title": "Rouge-Bleu"
-                    },
-                    {
-                      "const": "RdGy",
-                      "title": "Rouge-Gris"
-                    },
-                    {
-                      "const": "RdYlBu",
-                      "title": "Rouge-Jaune-Bleu"
-                    },
-                    {
-                      "const": "RdYlGn",
-                      "title": "Rouge-jaune-Vert"
-                    },
-                    {
-                      "const": "Spectral",
-                      "title": "Spectral"
-                    }
-                  ],
-                  "default": "RdYlGn"
-                },
-                "reverse": {
-                  "type": "boolean",
-                  "title": "Inverser"
-                }
-              }
-            },
-            {
-              "title": "Palette séquentielle",
-              "required": [
-                "type",
-                "name"
-              ],
-              "properties": {
-                "type": {
-                  "const": "sequential"
-                },
-                "name": {
-                  "type": "string",
-                  "oneOf": [
-                    {
-                      "const": "Blues",
-                      "title": "Bleu"
-                    },
-                    {
-                      "const": "BuGn",
-                      "title": "Bleu-Vert"
-                    },
-                    {
-                      "const": "BuPu",
-                      "title": "Bleu-Violet"
-                    },
-                    {
-                      "const": "GnBu",
-                      "title": "Vert-Bleu"
-                    },
-                    {
-                      "const": "Greens",
-                      "title": "Vert"
-                    },
-                    {
-                      "const": "Greys",
-                      "title": "Gris"
-                    },
-                    {
-                      "const": "OrRd",
-                      "title": "Orange-Rouge"
-                    },
-                    {
-                      "const": "Oranges",
-                      "title": "Orange"
-                    },
-                    {
-                      "const": "PuBu",
-                      "title": "Violet-Bleu"
-                    },
-                    {
-                      "const": "PuBuGn",
-                      "title": "Violet-Bleu-Vert"
-                    },
-                    {
-                      "const": "PuRd",
-                      "title": "Violet-Rouge"
-                    },
-                    {
-                      "const": "Purples",
-                      "title": "Violet"
-                    },
-                    {
-                      "const": "RdPu",
-                      "title": "Rouge-Violet"
-                    },
-                    {
-                      "const": "Reds",
-                      "title": "Rouge"
-                    },
-                    {
-                      "const": "YlGn",
-                      "title": "Jaune-Vert"
-                    },
-                    {
-                      "const": "YlGnBu",
-                      "title": "Jaune-Vert-Bleu"
-                    },
-                    {
-                      "const": "YlOrBr",
-                      "title": "Jaune-Orange-Marron"
-                    },
-                    {
-                      "const": "YlOrRd",
-                      "title": "Jaune-Orange-Marron"
-                    }
-                  ],
-                  "default": "YlOrRd"
-                },
-                "reverse": {
-                  "type": "boolean",
-                  "title": "Inverser"
-                }
-              }
-            },
-            {
-              "title": "Couleur et image spécifiques",
-              "required": [
-                "type",
-                "styles"
-              ],
-              "properties": {
-                "type": {
-                  "const": "manual"
-                },
-                "styles": {
-                  "title": "Couleurs et ordre",
-                  "type": "array",
-                  "x-fromUrl": "{datasets.0.href}/values_agg?field={styleField}&agg_size=100&size=0",
-                  "x-display": "list",
-                  "x-itemTitle": "value",
-                  "x-itemKey": "value",
-                  "x-itemsProp": "aggs",
-                  "items": {
-                    "type": "object",
-                    "required": [
-                      "value"
-                    ],
-                    "properties": {
-                      "value": {
-                        "type": "string",
-                        "x-display": "hidden"
-                      },
-                      "color": {
-                        "type": "string",
-                        "title": "Couleur",
-                        "format": "hexcolor",
-                        "default": "#DDDDDD",
-                        "x-display": "color-picker"
-                      }
-                    }
-                  }
                 }
               }
             },
@@ -718,7 +520,6 @@
       "title": "grouper les lignes et calculer des valeurs dans ces groupes",
       "type": "object",
       "required": [
-        "valueField",
         "metricType",
         "groupBy",
         "sort"
@@ -742,16 +543,20 @@
               },
               "oneOf": [
                 {
-                  "title": "valeurs exactes d'une colonne",
+                  "title": "valeurs exactes de colonnes",
                   "properties": {
                     "type": {
                       "const": "value",
                       "title": "Grouper par"
                     },
                     "field": {
-                      "type": "object",
-                      "title": "Grouper en fonction de cette colonne",
-                      "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
+                      "title": "Grouper en fonction de ces colonnes",
+                      "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
                       "x-itemTitle": "label",
                       "x-itemKey": "key"
                     }
@@ -770,7 +575,7 @@
                   }
                 },
                 {
-                  "title": "intervalles d'une colonne de type date",
+                  "title": "intervalles de colonnes de type date",
                   "required": [
                     "field",
                     "interval"
@@ -780,8 +585,11 @@
                       "const": "date"
                     },
                     "field": {
-                      "type": "object",
-                      "title": "Grouper en fonction de cette colonne",
+                      "title": "Grouper en fonction de ces colonnes",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
                       "x-fromUrl": "{datasets.0.href}/schema?calculated=false&format=date,date-time",
                       "x-itemTitle": "label",
                       "x-itemKey": "key"
@@ -816,7 +624,7 @@
                   }
                 },
                 {
-                  "title": "intervalles d'une colonne numérique",
+                  "title": "intervalles de colonnes numérique",
                   "required": [
                     "field",
                     "interval"
@@ -826,8 +634,12 @@
                       "const": "number"
                     },
                     "field": {
-                      "type": "object",
-                      "title": "Grouper en fonction de cette colonne",
+                      "title": "Grouper en fonction de ces colonnes",
+                      "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
                       "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
                       "x-itemTitle": "label",
                       "x-itemKey": "key"
@@ -867,19 +679,11 @@
                   "title": "la clé du groupe (descendant)"
                 }
               ]
-            }
-          }
-        },
-        {
-          "title": "Calcul à effectuer",
-          "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
-          "required": [
-            "metricType"
-          ],
-          "properties": {
+            },
             "metricType": {
               "type": "string",
               "title": "Type de calcul",
+              "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
               "default": "sum",
               "oneOf": [
                 {
@@ -899,26 +703,10 @@
                   "title": "somme"
                 }
               ]
-            },
-            "valueField": {
-              "type": "object",
-              "title": "Colonne de valeurs",
-              "description": "La colonne contenant la valeur numérique sur laquelle effectuer un calcul.",
-              "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
-              "x-itemTitle": "label",
-              "x-itemKey": "key"
             }
           }
         }
       ]
-    },
-    "valueFieldAgg": {
-      "type": "object",
-      "title": "Colonne de valeurs",
-      "description": "La colonne contenant la valeur numérique sur laquelle effectuer un calcul.",
-      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
-      "x-itemTitle": "label",
-      "x-itemKey": "key"
     },
     "colorscheme": {
       "type": "object",
@@ -1271,16 +1059,20 @@
       },
       "oneOf": [
         {
-          "title": "valeurs exactes d'une colonne",
+          "title": "valeurs exactes de colonnes",
           "properties": {
             "type": {
               "const": "value",
               "title": "Grouper par"
             },
             "field": {
-              "type": "object",
-              "title": "Grouper en fonction de cette colonne",
-              "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
+              "title": "Grouper en fonction de ces colonnes",
+              "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
               "x-itemTitle": "label",
               "x-itemKey": "key"
             }
@@ -1299,7 +1091,7 @@
           }
         },
         {
-          "title": "intervalles d'une colonne de type date",
+          "title": "intervalles de colonnes de type date",
           "required": [
             "field",
             "interval"
@@ -1309,8 +1101,11 @@
               "const": "date"
             },
             "field": {
-              "type": "object",
-              "title": "Grouper en fonction de cette colonne",
+              "title": "Grouper en fonction de ces colonnes",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
               "x-fromUrl": "{datasets.0.href}/schema?calculated=false&format=date,date-time",
               "x-itemTitle": "label",
               "x-itemKey": "key"
@@ -1345,7 +1140,7 @@
           }
         },
         {
-          "title": "intervalles d'une colonne numérique",
+          "title": "intervalles de colonnes numérique",
           "required": [
             "field",
             "interval"
@@ -1355,8 +1150,12 @@
               "const": "number"
             },
             "field": {
-              "type": "object",
-              "title": "Grouper en fonction de cette colonne",
+              "title": "Grouper en fonction de ces colonnes",
+              "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
               "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
               "x-itemTitle": "label",
               "x-itemKey": "key"
@@ -1373,6 +1172,7 @@
     "metricType": {
       "type": "string",
       "title": "Type de calcul",
+      "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
       "default": "sum",
       "oneOf": [
         {
@@ -1545,24 +1345,24 @@
       "title": "Nombre maximal de lignes",
       "default": 10
     },
-    "groupField": {
-      "type": "object",
-      "title": "Grouper en fonction de cette colonne",
-      "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
+    "groupFieldNumber": {
+      "title": "Grouper en fonction de ces colonnes",
+      "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
       "x-itemTitle": "label",
       "x-itemKey": "key"
     },
     "groupFieldDate": {
-      "type": "object",
-      "title": "Grouper en fonction de cette colonne",
+      "title": "Grouper en fonction de ces colonnes",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
       "x-fromUrl": "{datasets.0.href}/schema?calculated=false&format=date,date-time",
-      "x-itemTitle": "label",
-      "x-itemKey": "key"
-    },
-    "groupFieldNumber": {
-      "type": "object",
-      "title": "Grouper en fonction de cette colonne",
-      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
       "x-itemTitle": "label",
       "x-itemKey": "key"
     },

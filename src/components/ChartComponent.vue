@@ -47,7 +47,7 @@ export default {
     const data = computed(() => appInfo.data)
     const incompleteConfig = computed(() => appInfo.incompleteConfig === null)
     const config = computed(() => appInfo.config)
-    const chartTitle = computed(() => generateChartTitle(config.value))
+    const chartTitle = ref('')
     const showTitle = computed(() => config.value.showTitle)
 
     const tooltip = ref({
@@ -59,13 +59,13 @@ export default {
     })
 
     const showTooltip = (event, index) => {
-      const agg = data.value.aggs[index]
+      const agg = data.value[index]
       tooltip.value = {
         show: true,
         x: event.clientX,
         y: event.clientY,
-        title: agg.value,
-        value: metricTypes.find(m => m.value === config.value.dataType?.metricType).text + ' : ' + agg.metric
+        title: agg.ogField[0],
+        value: metricTypes.find(m => m.value === data.value.ogMetric).text + ' : ' + agg.metric
       }
     }
 
@@ -86,17 +86,18 @@ export default {
       if (chartPaths.value) {
         chartPaths.value = []
       }
-      renderChart()
+      await renderChart()
     }
 
     const renderChart = async () => {
       if (!data.value || incompleteConfig.value === null) return
       const cx = width.value / 2
       const cy = height.value / 2
+      chartTitle.value = generateChartTitle(config.value, data.value)
 
       await nextTick()
       try {
-        chartPaths.value = prepareSvgPieChartData(config.value, data.value, cx, cy)
+        chartPaths.value = prepareSvgPieChartData(data.value, cx, cy)
       } catch (err) {
         appInfo.setError(err)
       }
@@ -104,12 +105,11 @@ export default {
 
     watch([data, config], async () => {
       if (data.value && config.value) {
-        chartPaths.value = prepareSvgPieChartData(config.value, data.value)
-      }
-      try {
-        await refresh()
-      } catch (err) {
-        renderChart()
+        try {
+          await refresh()
+        } catch (err) {
+          await renderChart()
+        }
       }
     }, { immediate: true })
 

@@ -72,7 +72,6 @@
       "title": "grouper les lignes et calculer des valeurs dans ces groupes",
       "type": "object",
       "required": [
-        "valueField",
         "metricType",
         "groupBy",
         "sort"
@@ -91,31 +90,13 @@
             },
             "sort": {
               "$ref": "#/definitions/sortMetric"
-            }
-          }
-        },
-        {
-          "title": "Calcul à effectuer",
-          "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
-          "required": ["metricType"],
-          "properties": {
+            },
             "metricType": {
               "$ref": "#/definitions/metricType"
-            },
-            "valueField": {
-              "$ref": "#/definitions/valueFieldAgg"
             }
           }
         }
       ]
-    },
-    "valueFieldAgg": {
-      "type": "object",
-      "title": "Colonne de valeurs",
-      "description": "La colonne contenant la valeur numérique sur laquelle effectuer un calcul.",
-      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
-      "x-itemTitle": "label",
-      "x-itemKey": "key"
     },
     "colorscheme": {
       "$ref": "https://github.com/data-fair/lib/colors"
@@ -130,28 +111,28 @@
       },
       "oneOf": [
         {
-          "title": "valeurs exactes d'une colonne",
+          "title": "valeurs exactes de colonnes",
           "properties": {
             "type": {
               "const": "value",
               "title": "Grouper par"
             },
             "field": {
-              "$ref": "#/definitions/groupField"
+              "$ref": "#/definitions/groupFieldNumber"
             }
           },
           "dependencies": {
             "field.key": {
               "properties": {
                 "size": {
-                "$ref": "#/definitions/nbGroups"
+                  "$ref": "#/definitions/nbGroups"
                 }
               }
             }
           }
         },
         {
-          "title": "intervalles d'une colonne de type date",
+          "title": "intervalles de colonnes de type date",
           "required": [
             "field",
             "interval"
@@ -193,7 +174,7 @@
           }
         },
         {
-          "title": "intervalles d'une colonne numérique",
+          "title": "intervalles de colonnes numérique",
           "required": [
             "field",
             "interval"
@@ -217,6 +198,7 @@
     "metricType": {
       "type": "string",
       "title": "Type de calcul",
+      "description": "Le résultat de ce calcul pour chaque groupe sera utilisé comme valeur numérique à visualiser.",
       "default": "sum",
       "oneOf": [
         {
@@ -377,24 +359,24 @@
       "title": "Nombre maximal de lignes",
       "default": 10
     },
-    "groupField": {
-      "type": "object",
-      "title": "Grouper en fonction de cette colonne",
-      "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
+    "groupFieldNumber": {
+      "title": "Grouper en fonction de ces colonnes",
+      "description": "Les colonnes contenant la valeur numérique sur laquelle effectuer un calcul.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
       "x-itemTitle": "label",
       "x-itemKey": "key"
     },
     "groupFieldDate": {
-      "type": "object",
-      "title": "Grouper en fonction de cette colonne",
+      "title": "Grouper en fonction de ces colonnes",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
       "x-fromUrl": "{datasets.0.href}/schema?calculated=false&format=date,date-time",
-      "x-itemTitle": "label",
-      "x-itemKey": "key"
-    },
-    "groupFieldNumber": {
-      "type": "object",
-      "title": "Grouper en fonction de cette colonne",
-      "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
       "x-itemTitle": "label",
       "x-itemKey": "key"
     },
