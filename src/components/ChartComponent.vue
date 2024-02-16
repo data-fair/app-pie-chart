@@ -141,8 +141,9 @@ export default {
 }
 
 .tooltip {
-  border: 1px solid #ccc;
-  background-color: #fff;
+  border: 1px solid #282A36;
+  background-color: #44475A;
+  color: #F8F8F2;
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
