@@ -5,7 +5,10 @@
         <svg ref="chartSvg" :height="height + 80" :width="width" :viewBox="`0 0 ${width} ${height + 80}`">
           <text x="50%" y="50" dominant-baseline="middle" text-anchor="middle">{{ chartTitle }}</text>
           <g transform="translate(0, 80)">
-            <g v-for="(slice, index) in chartPaths" :key="index">
+            <g v-for="(slice, index) in chartPaths" :key="index"
+              @mouseenter="showTooltip($event, index)"
+              @mousemove="moveTooltip($event)"
+              @mouseleave="hideTooltip">
               <path :d="slice.d" :fill="slice.fill"></path>
             </g>
           </g>
@@ -13,10 +16,17 @@
       </div>
       <div v-else>
         <svg ref="chartSvg" :height="height" :width="width" :viewBox="`0 0 ${width} ${height}`">
-          <g v-for="(slice, index) in chartPaths" :key="index">
+          <g v-for="(slice, index) in chartPaths" :key="index"
+              @mouseenter="showTooltip($event, index)"
+              @mousemove="moveTooltip($event)"
+              @mouseleave="hideTooltip">
             <path :d="slice.d" :fill="slice.fill"></path>
           </g>
         </svg>
+      </div>
+      <div v-if="tooltip.show" :style="{position: 'absolute', top: tooltip.y + 'px', left: tooltip.x + 'px'}" class="tooltip">
+        <div><b>{{ tooltip.title }}</b></div>
+        <div>{{ tooltip.value }}</div>
       </div>
     </template>
   </div>
@@ -39,6 +49,36 @@ export default {
     const config = computed(() => appInfo.config)
     const chartTitle = computed(() => generateChartTitle(config.value))
     const showTitle = computed(() => config.value.showTitle)
+
+    const tooltip = ref({
+      show: false,
+      x: 0,
+      y: 0,
+      title: '',
+      value: ''
+    })
+
+    const showTooltip = (event, index) => {
+      const agg = data.value.aggs[index]
+      tooltip.value = {
+        show: true,
+        x: event.clientX,
+        y: event.clientY,
+        title: agg.value,
+        value: agg.metric
+      }
+    }
+
+    const moveTooltip = (event) => {
+      if (tooltip.value.show) {
+        tooltip.value.x = event.clientX + 20
+        tooltip.value.y = event.clientY - 5
+      }
+    }
+
+    const hideTooltip = () => {
+      tooltip.value.show = false
+    }
 
     const refresh = async () => {
       height.value = showTitle.value ? window.innerHeight - 100 : window.innerHeight - 10
@@ -83,7 +123,11 @@ export default {
       height,
       width,
       showTitle,
-      chartTitle
+      chartTitle,
+      tooltip,
+      showTooltip,
+      moveTooltip,
+      hideTooltip
     }
   }
 }
@@ -93,5 +137,14 @@ export default {
 .container-fluid {
   width: 100%;
   padding: 0 1rem;
+}
+
+.tooltip {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  pointer-events: none;
 }
 </style>
