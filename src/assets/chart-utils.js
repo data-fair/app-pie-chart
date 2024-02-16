@@ -63,4 +63,4 @@ function prepareSvgPieChartData(config, data, cx, cy) {
   return chartData
 }
 
-export { chartTitle, prepareSvgPieChartData }
+export { chartTitle, prepareSvgPieChartData, metricTypes }

@@ -35,7 +35,7 @@
 <script>
 import useAppInfo from '@/composables/useAppInfo'
 import { ref, computed, onMounted, watch } from 'vue'
-import { prepareSvgPieChartData, chartTitle as generateChartTitle } from '../assets/chart-utils.js'
+import { prepareSvgPieChartData, chartTitle as generateChartTitle, metricTypes } from '../assets/chart-utils.js'
 
 export default {
   setup() {
@@ -65,7 +65,7 @@ export default {
         x: event.clientX,
         y: event.clientY,
         title: agg.value,
-        value: agg.metric
+        value: metricTypes.find(m => m.value === config.value.dataType?.metricType).text + ' : ' + agg.metric
       }
     }
 
