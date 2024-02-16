@@ -99,7 +99,36 @@
       ]
     },
     "colorscheme": {
-      "$ref": "https://github.com/data-fair/lib/colors"
+      "type": "object",
+      "properties": {
+        "colors": {
+          "title": "Couleur par colonne",
+          "type": "array",
+          "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
+          "x-itemTitle": "label",
+          "x-itemKey": "key",
+          "x-display": "list",
+          "items": {
+            "type": "object",
+            "required": ["color"],
+            "properties": {
+              "color": {
+                "type": "string",
+                "format": "hexcolor",
+                "default": "#828282",
+                "x-display": "color-picker"
+              }
+            }
+          }
+        },
+        "defaultColor": {
+          "title": "Couleur par défaut",
+          "type": "string",
+          "format": "hexcolor",
+          "default": "#828282",
+          "x-display": "color-picker"
+        }
+      }
     },
     "groupBy": {
       "type": "object",
@@ -379,28 +408,6 @@
       "x-fromUrl": "{datasets.0.href}/schema?calculated=false&format=date,date-time",
       "x-itemTitle": "label",
       "x-itemKey": "key"
-    },
-    "colorAndOrder": {
-      "type": "object",
-      "required": ["value", "color"],
-      "properties": {
-        "value": {
-          "type": "string",
-          "x-display": "hidden"
-        },
-        "color": {
-          "type": "string",
-          "format": "hexcolor",
-          "default": "#828282",
-          "x-display": "color-picker"
-        }
-      }
-    },
-    "dynamicSort": {
-      "type": "boolean",
-      "title": "Trier dynamiquement",
-      "description": "Si cette option est activée, l'utilisateur pourra choisir la colonne de tri et l'ordre de tri dans le formulaire de filtres interactifs.",
-      "default": false
     }
   }
 }

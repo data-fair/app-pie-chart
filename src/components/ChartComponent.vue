@@ -97,7 +97,7 @@ export default {
 
       await nextTick()
       try {
-        chartPaths.value = prepareSvgPieChartData(data.value, cx, cy)
+        chartPaths.value = prepareSvgPieChartData(config.value, data.value, cx, cy)
       } catch (err) {
         appInfo.setError(err)
       }

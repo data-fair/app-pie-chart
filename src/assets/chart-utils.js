@@ -1,4 +1,4 @@
-import { generateHuesFromColor } from 'palex'
+import { palex } from 'palex'
 
 const metricTypes = [
   { value: 'count', text: 'Nombre de documents' },
@@ -46,7 +46,7 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
   }
 }
 
-function prepareSvgPieChartData(data, cx, cy) {
+function prepareSvgPieChartData(config, data, cx, cy) {
   if (data.length > 500) {
     throw new Error('Nombre d\'éléments à afficher trop important. Abandon.')
   }
@@ -55,10 +55,10 @@ function prepareSvgPieChartData(data, cx, cy) {
   const chartData = []
 
   const totalMetric = data.reduce((acc, agg) => acc + agg.metric, 0)
-  const backgroundColors = generateHuesFromColor('#6272A4', data.length)
+  const backgroundColors = palex(config.colorscheme.defaultColor, 'color', data.length)
 
   let angles = data.map(agg => (agg.metric / totalMetric) * 360)
-  const minAngle = 1
+  const minAngle = 5
   const adjustmentNeeded = angles.some(angle => angle < minAngle)
 
   if (adjustmentNeeded) {
