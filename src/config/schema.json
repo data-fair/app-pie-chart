@@ -35,14 +35,6 @@
           "$ref": "#/definitions/colorscheme"
         }
       }
-    },
-    {
-      "title": "Navigation",
-      "properties": {
-        "dynamicFilters": {
-          "$ref": "#/definitions/dynamicFilters"
-        }
-      }
     }
   ],
   "definitions": {
@@ -94,9 +86,6 @@
             },
             "sort": {
               "$ref": "#/definitions/sortMetric"
-            },
-            "dynamicSort1": {
-              "$ref": "#/definitions/dynamicSort"
             }
           }
         },
@@ -110,12 +99,6 @@
             },
             "valueField": {
               "$ref": "#/definitions/valueFieldAgg"
-            },
-            "dynamicMetric": {
-              "type": "boolean",
-              "title": "Calcul dynamique",
-              "description": "Si cette option est activée, l'utilisateur pourra choisir le type de calcul dans le formulaire de filtres interactifs.",
-              "default": false
             }
           }
         }
@@ -285,33 +268,6 @@
       "properties": {
         "type": {
           "const": "pie"
-        }
-      }
-    },
-    "dynamicFilters": {
-      "title": "Filtres interactifs",
-      "description": "Ces filtres seront proposés à l'utilisateur sous forme de formulaire en haut du graphique",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "field"
-        ],
-        "properties": {
-          "field": {
-            "type": "object",
-            "title": "Colonne de filtre",
-            "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
-            "x-itemTitle": "label",
-            "x-itemKey": "key"
-          },
-          "defaultValues": {
-            "type": "array",
-            "title": "Valeurs par défaut",
-            "items": {
-              "type": "string"
-            }
-          }
         }
       }
     },

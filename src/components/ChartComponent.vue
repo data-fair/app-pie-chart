@@ -1,34 +1,37 @@
 <template>
-  <v-container fluid class="pa-1">
+  <div class="container-fluid d-flex justify-content-center align-items-center">
     <template v-if="!incompleteConfig">
-      <svg ref="chartSvg" :height="height" :width="width" :viewBox="`0 0 ${height} ${width}`">
-        <g v-for="(slice, index) in chartPaths" :key="index">
-          <path :d="slice.d" :fill="slice.fill"></path>
+      <svg ref="chartSvg" :height="height + 80" :width="width" :viewBox="`0 0 ${width} ${height + 80}`">
+        <text x="50%" y="50" dominant-baseline="middle" text-anchor="middle">{{ chartTitle }}</text>
+        <g transform="translate(0, 80)">
+          <g v-for="(slice, index) in chartPaths" :key="index">
+            <path :d="slice.d" :fill="slice.fill"></path>
+          </g>
         </g>
       </svg>
     </template>
-  </v-container>
+  </div>
 </template>
 
 <script>
 import useAppInfo from '@/composables/useAppInfo'
 import { ref, computed, onMounted, watch } from 'vue'
-import { prepareSvgPieChartData } from '../assets/chart-utils.js'
+import { prepareSvgPieChartData, chartTitle as generateChartTitle } from '../assets/chart-utils.js'
 
 export default {
   setup() {
     const appInfo = useAppInfo()
     const chartPaths = ref([])
-    const chartTop = ref(0)
     const height = ref(null)
     const width = ref(null)
 
     const data = computed(() => appInfo.data)
     const incompleteConfig = computed(() => appInfo.incompleteConfig === null)
     const config = computed(() => appInfo.config)
+    const chartTitle = computed(() => generateChartTitle(config.value))
 
     const refresh = async () => {
-      height.value = window.innerHeight - chartTop.value
+      height.value = window.innerHeight - 100
       width.value = window.innerWidth
       if (chartPaths.value) {
         chartPaths.value = []
@@ -60,9 +63,6 @@ export default {
     }, { immediate: true })
 
     onMounted(async () => {
-      if (chartPaths.value.length > 0) {
-        chartTop.value = chartPaths.value.getBoundingClientRect().top
-      }
       window.addEventListener('resize', refresh, true)
       refresh()
     })
@@ -71,12 +71,16 @@ export default {
       chartPaths,
       incompleteConfig,
       height,
-      width
+      width,
+      chartTitle
     }
   }
 }
 </script>
 
 <style lang="css">
-/* Add styles if needed */
+.container-fluid {
+  width: 100%;
+  padding: 0 1rem;
+}
 </style>

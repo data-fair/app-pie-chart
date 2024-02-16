@@ -285,12 +285,6 @@
                       "title": "la clé du groupe (descendant)"
                     }
                   ]
-                },
-                "dynamicSort1": {
-                  "type": "boolean",
-                  "title": "Trier dynamiquement",
-                  "description": "Si cette option est activée, l'utilisateur pourra choisir la colonne de tri et l'ordre de tri dans le formulaire de filtres interactifs.",
-                  "default": false
                 }
               }
             },
@@ -331,12 +325,6 @@
                   "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
                   "x-itemTitle": "label",
                   "x-itemKey": "key"
-                },
-                "dynamicMetric": {
-                  "type": "boolean",
-                  "title": "Calcul dynamique",
-                  "description": "Si cette option est activée, l'utilisateur pourra choisir le type de calcul dans le formulaire de filtres interactifs.",
-                  "default": false
                 }
               }
             }
@@ -499,38 +487,6 @@
               }
             }
           ]
-        }
-      }
-    },
-    {
-      "title": "Navigation",
-      "properties": {
-        "dynamicFilters": {
-          "title": "Filtres interactifs",
-          "description": "Ces filtres seront proposés à l'utilisateur sous forme de formulaire en haut du graphique",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "field"
-            ],
-            "properties": {
-              "field": {
-                "type": "object",
-                "title": "Colonne de filtre",
-                "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
-                "x-itemTitle": "label",
-                "x-itemKey": "key"
-              },
-              "defaultValues": {
-                "type": "array",
-                "title": "Valeurs par défaut",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -714,12 +670,6 @@
                   "title": "la clé du groupe (descendant)"
                 }
               ]
-            },
-            "dynamicSort1": {
-              "type": "boolean",
-              "title": "Trier dynamiquement",
-              "description": "Si cette option est activée, l'utilisateur pourra choisir la colonne de tri et l'ordre de tri dans le formulaire de filtres interactifs.",
-              "default": false
             }
           }
         },
@@ -760,12 +710,6 @@
               "x-fromUrl": "{datasets.0.href}/schema?calculated=false&type=integer,number",
               "x-itemTitle": "label",
               "x-itemKey": "key"
-            },
-            "dynamicMetric": {
-              "type": "boolean",
-              "title": "Calcul dynamique",
-              "description": "Si cette option est activée, l'utilisateur pourra choisir le type de calcul dans le formulaire de filtres interactifs.",
-              "default": false
             }
           }
         }
@@ -1288,33 +1232,6 @@
       "properties": {
         "type": {
           "const": "pie"
-        }
-      }
-    },
-    "dynamicFilters": {
-      "title": "Filtres interactifs",
-      "description": "Ces filtres seront proposés à l'utilisateur sous forme de formulaire en haut du graphique",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "field"
-        ],
-        "properties": {
-          "field": {
-            "type": "object",
-            "title": "Colonne de filtre",
-            "x-fromUrl": "{datasets.0.href}/schema?calculated=false",
-            "x-itemTitle": "label",
-            "x-itemKey": "key"
-          },
-          "defaultValues": {
-            "type": "array",
-            "title": "Valeurs par défaut",
-            "items": {
-              "type": "string"
-            }
-          }
         }
       }
     },

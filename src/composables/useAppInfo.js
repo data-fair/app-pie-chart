@@ -99,18 +99,12 @@ export default function useAppInfo() {
       interval: config.dataType.groupBy.type === 'value' ? 'value' : config.dataType.groupBy.interval,
       metric: config.dataType.metricType,
       metric_field: config.dataType.valueField.key,
-      qs: filters2qs((config.staticFilters).concat(config.dynamicFilters)),
       ...conceptFilters.conceptFilters.value,
       finalizedAt: config.datasets[0].finalizedAt // for better caching
     }
 
-    if (config.dataType.secondGroupBy && config.dataType.secondGroupBy.field && config.dataType.secondGroupBy.field.key) {
-      params.field = `${params.field};${config.dataType.secondGroupBy.field.key}`
-      params.agg_size = `${params.agg_size};${config.dataType.secondGroupBy.size}`
-      params.interval = `${params.interval};${config.dataType.secondGroupBy.type === 'value' ? 'value' : config.dataType.secondGroupBy.interval}`
-      if (config.dataType.secondSort) {
-        params.sort = `${params.sort};${config.dataType.secondSort}`
-      }
+    if (config.staticFilters && config.staticFilters.length > 0 && config.dynamicFilters && config.dynamicFilters.length > 0) {
+      params.qs = filters2qs((config.staticFilters).concat(config.dynamicFilters))
     }
 
     const response = await ofetch(`${config.datasets[0].href}/values_agg`, { params }).catch(err => {

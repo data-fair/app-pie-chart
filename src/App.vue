@@ -41,4 +41,18 @@ export default {
 </script>
 
 <style>
+html {
+  overflow-y: hidden;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  overflow-y: hidden;
+  font-family: 'Nunito', sans-serif;
+}
+
+body .application.embed {
+  background: transparent;
+}
 </style>

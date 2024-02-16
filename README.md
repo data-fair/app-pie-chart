@@ -16,7 +16,6 @@ DataFair comes with functionalities to facilitate the development, deployment an
 
 This technical stack is just an example of what can be used to build an application for DataFair. It is a quite rich stack for a state of the art development environment. For an application with a more minimalist stack, you can see [app-minimal](https://github.com/data-fair/app-minimal). For a state of the art application generator see the [vue-cli plugin](https://github.com/data-fair/vue-cli-plugin-app).
 - [vuejs](https://vuejs.org/): our favorite framework for client-side code
-- [vuetify](https://vuetifyjs.com/en/): a material design UI framework for vuejs
 
 ## Development Setup
 
