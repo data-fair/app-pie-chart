@@ -57,8 +57,25 @@ function prepareSvgPieChartData(data, cx, cy) {
   const totalMetric = data.reduce((acc, agg) => acc + agg.metric, 0)
   const backgroundColors = generateHuesFromColor('#6272A4', data.length)
 
-  data.forEach((agg, index) => {
-    const angle = data.length === 1 ? 360 : (agg.metric / totalMetric) * 360
+  let angles = data.map(agg => (agg.metric / totalMetric) * 360)
+  const minAngle = 1
+  const adjustmentNeeded = angles.some(angle => angle < minAngle)
+
+  if (adjustmentNeeded) {
+    const extraAngles = angles.filter(angle => angle > minAngle).reduce((acc, angle) => acc - (angle - minAngle), 360)
+    const adjustSum = angles.filter(angle => angle < minAngle).length * minAngle
+    angles = angles.map(angle => angle < minAngle ? minAngle : angle - ((angle - minAngle) / extraAngles) * adjustSum)
+  }
+
+  const totalAngle = angles.reduce((acc, angle) => acc + angle, 0)
+  if (totalAngle !== 360) {
+    angles = angles.map((angle, index, arr) => {
+      if (index === arr.length - 1) return angle + (360 - totalAngle)
+      return angle
+    })
+  }
+
+  angles.forEach((angle, index) => {
     const endAngle = startAngle + angle
     const path = calculatePieSlicePath(cx, cy, radius, startAngle, endAngle)
     chartData.push({
