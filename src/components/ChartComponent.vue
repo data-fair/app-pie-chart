@@ -1,14 +1,23 @@
 <template>
   <div class="container-fluid d-flex justify-content-center align-items-center">
     <template v-if="!incompleteConfig">
-      <svg ref="chartSvg" :height="height + 80" :width="width" :viewBox="`0 0 ${width} ${height + 80}`">
-        <text x="50%" y="50" dominant-baseline="middle" text-anchor="middle">{{ chartTitle }}</text>
-        <g transform="translate(0, 80)">
+      <div v-if="showTitle">
+        <svg ref="chartSvg" :height="height + 80" :width="width" :viewBox="`0 0 ${width} ${height + 80}`">
+          <text x="50%" y="50" dominant-baseline="middle" text-anchor="middle">{{ chartTitle }}</text>
+          <g transform="translate(0, 80)">
+            <g v-for="(slice, index) in chartPaths" :key="index">
+              <path :d="slice.d" :fill="slice.fill"></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div v-else>
+        <svg ref="chartSvg" :height="height" :width="width" :viewBox="`0 0 ${width} ${height}`">
           <g v-for="(slice, index) in chartPaths" :key="index">
             <path :d="slice.d" :fill="slice.fill"></path>
           </g>
-        </g>
-      </svg>
+        </svg>
+      </div>
     </template>
   </div>
 </template>
@@ -29,9 +38,10 @@ export default {
     const incompleteConfig = computed(() => appInfo.incompleteConfig === null)
     const config = computed(() => appInfo.config)
     const chartTitle = computed(() => generateChartTitle(config.value))
+    const showTitle = computed(() => config.value.showTitle)
 
     const refresh = async () => {
-      height.value = window.innerHeight - 100
+      height.value = showTitle.value ? window.innerHeight - 100 : window.innerHeight - 10
       width.value = window.innerWidth
       if (chartPaths.value) {
         chartPaths.value = []
@@ -72,6 +82,7 @@ export default {
       incompleteConfig,
       height,
       width,
+      showTitle,
       chartTitle
     }
   }
