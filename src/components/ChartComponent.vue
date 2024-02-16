@@ -86,7 +86,6 @@ export default {
       if (chartPaths.value) {
         chartPaths.value = []
       }
-      await nextTick()
       renderChart()
     }
 
@@ -108,7 +107,6 @@ export default {
         chartPaths.value = prepareSvgPieChartData(config.value, data.value)
       }
       try {
-        await nextTick()
         await refresh()
       } catch (err) {
         renderChart()
@@ -117,7 +115,6 @@ export default {
 
     onMounted(async () => {
       window.addEventListener('resize', refresh, true)
-      await nextTick()
       refresh()
     })
 

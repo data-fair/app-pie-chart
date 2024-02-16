@@ -38,7 +38,6 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
 }
 
 function prepareSvgPieChartData(config, data, cx, cy) {
-  console.log('prepareSvgPieChartData', config, data)
   if (data.aggs.length > 500) {
     throw new Error('Nombre d\'éléments à afficher trop important. Abandon.')
   }
