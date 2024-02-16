@@ -23,6 +23,9 @@ function chartTitle(config, data) {
 }
 
 function calculatePieSlicePath(cx, cy, radius, startAngle, endAngle) {
+  if (endAngle - startAngle >= 360) {
+    endAngle = startAngle + 359.999
+  }
   const start = polarToCartesian(cx, cy, radius, endAngle)
   const end = polarToCartesian(cx, cy, radius, startAngle)
   const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1'
@@ -55,7 +58,7 @@ function prepareSvgPieChartData(data, cx, cy) {
   const backgroundColors = generateHuesFromColor('#6272A4', data.length)
 
   data.forEach((agg, index) => {
-    const angle = (agg.metric / totalMetric) * 360
+    const angle = data.length === 1 ? 360 : (agg.metric / totalMetric) * 360
     const endAngle = startAngle + angle
     const path = calculatePieSlicePath(cx, cy, radius, startAngle, endAngle)
     chartData.push({
