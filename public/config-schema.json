@@ -70,7 +70,7 @@
                 }
               },
               {
-                "title": "Restreindre à un interval de valeurs",
+                "title": "Restreindre à un intervalle de valeurs",
                 "required": [
                   "field"
                 ],
@@ -240,7 +240,7 @@
                       }
                     },
                     {
-                      "title": "intervalles de colonnes numérique",
+                      "title": "intervalles de colonnes numériques",
                       "required": [
                         "field",
                         "interval"
@@ -509,7 +509,7 @@
                   }
                 },
                 {
-                  "title": "intervalles de colonnes numérique",
+                  "title": "intervalles de colonnes numériques",
                   "required": [
                     "field",
                     "interval"
@@ -718,7 +718,7 @@
           }
         },
         {
-          "title": "intervalles de colonnes numérique",
+          "title": "intervalles de colonnes numériques",
           "required": [
             "field",
             "interval"
@@ -848,7 +848,7 @@
             }
           },
           {
-            "title": "Restreindre à un interval de valeurs",
+            "title": "Restreindre à un intervalle de valeurs",
             "required": [
               "field"
             ],
